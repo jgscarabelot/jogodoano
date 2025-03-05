@@ -1,30 +1,38 @@
 const canvas = document.getElementById('jogo2D')
 const ctx = canvas.getContext('2d')
+const gravidade = 0.5
+const chaoY = canvas.height - 100;
 const personagem = {
     x: 100,
-    y: canvas.height -50,
-    altura: 50,
-    largura: 50,
+    y: chaoY - 100,
+    altura: 100,
+    largura: 100,
     velocidadey:0,
     pulando: false
 }
 document.addEventListener('keypress', (e) => {
-    if (e.code == 'Space'){
+    if (e.code == 'Space' && personagem.pulando==false){
         console.log("clicou para pular")
-        personagem.velocidadey = -10
+        personagem.velocidadey = 15
         personagem.pulando = true
     }
 })
 
 
 function desenharPersonagem() {
-    ctx.fillStyle = 'red'
+    ctx.fillStyle = 'blue'
     ctx.fillRect(personagem.x, personagem.y, personagem.altura, personagem.largura)
 }
 
 function atualizarPersonagem() {
 if (personagem.pulando == true){
-    personagem.y += personagem.velocidadey;
+    personagem.velocidadey -= gravidade
+    personagem.y -= personagem.velocidadey;
+    if (personagem.y >= chaoY-personagem.altura){
+        personagem.velocidadey = 0
+        personagem.pulando= false
+        personagem.y = chaoY - personagem.altura;
+    }
 }
 }
 
