@@ -1,13 +1,18 @@
 const canvas = document.getElementById('jogo2D');
 const ctx = canvas.getContext('2d');
+
+// Constantes e variáveis
 const gravidade = 0.5;
 const chaoY = canvas.height - 180;
 let gameOver = false;
+
+// Carregar imagens
 const imgPersonagem = new Image();
 imgPersonagem.src = 'normal1.png'; // Substitua pelo caminho correto do seu sprite sheet
 const imgPersonagemPulo = new Image();
 imgPersonagemPulo.src = 'pulando.png';
 
+// Definir personagem
 const personagem = {
     x: 20,
     y: chaoY - 95,
@@ -25,6 +30,7 @@ const personagem = {
     frameDelayCounter: 0
 };
 
+// Eventos de controle
 document.addEventListener('keypress', (e) => {
     if (e.code == 'Space' && !personagem.pulando && !gameOver) {
         console.log("clicou para pular");
@@ -39,18 +45,20 @@ document.addEventListener('keypress', (e) => {
     }
 });
 
-document.addEventListener('click', (e) => {
-    if(gameOver) {
+document.addEventListener('click', () => {
+    if (gameOver) {
         location.reload(); // Reinicia o jogo ao clicar
     }
 });
 
+// Função para desenhar o personagem
 function desenharPersonagem() {
     if (personagem.pulando) {
         ctx.drawImage(imgPersonagemPulo, personagem.x, personagem.y, personagem.larguraPulo, personagem.alturaPulo);
     } else {
         const frameX = personagem.frameIndex * personagem.frameWidth;
         ctx.drawImage(imgPersonagem, frameX, 0, personagem.frameWidth, personagem.frameHeight, personagem.x, personagem.y, personagem.frameWidth, personagem.frameHeight);
+
         // Atualizar o frame da animação
         personagem.frameDelayCounter++;
         if (personagem.frameDelayCounter >= personagem.frameDelay) {
@@ -60,6 +68,7 @@ function desenharPersonagem() {
     }
 }
 
+// Função para atualizar o personagem
 function atualizarPersonagem() {
     if (personagem.pulando) {
         personagem.velocidadey += gravidade; // Aumenta a velocidade Y pela gravidade
@@ -74,6 +83,7 @@ function atualizarPersonagem() {
     }
 }
 
+// Definir obstáculo
 const obstaculo = {
     x: canvas.width - 50,
     y: canvas.height - 194,
@@ -82,22 +92,25 @@ const obstaculo = {
     velocidadex: 5,
 };
 
+// Função para desenhar o obstáculo
 function desenharObstaculo() {
     ctx.fillStyle = 'red';
     ctx.fillRect(obstaculo.x, obstaculo.y, obstaculo.largura, obstaculo.altura);
 }
 
+// Função para atualizar o obstáculo
 function atualizarObstaculo() {
     obstaculo.x -= obstaculo.velocidadex;
     if (obstaculo.x <= -obstaculo.largura) {
         obstaculo.x = canvas.width;
         obstaculo.velocidadex += 0.2;
-        let nova_altura = (Math.random() * 50) + 100;
-        obstaculo.altura = nova_altura;
-        obstaculo.y = canvas.height - nova_altura - 94; // Ajuste da posição Y
+        let novaAltura = (Math.random() * 50) + 100;
+        obstaculo.altura = novaAltura;
+        obstaculo.y = canvas.height - novaAltura - 94; // Ajuste da posição Y
     }
 }
 
+// Função que detecta colisões
 function houveColisao() {
     gameOver = true; // Define que o jogo acabou após a colisão
     ctx.fillStyle = 'red';
@@ -107,6 +120,7 @@ function houveColisao() {
     ctx.fillText("GAME OVER", (canvas.width / 2) - 100, (canvas.height / 2)); // Exibe a mensagem "Game Over"
 }
 
+// Função para verificar colisão entre o personagem e o obstáculo
 function verificarColisao() {
     if (
         personagem.x < obstaculo.x + obstaculo.largura &&
@@ -118,6 +132,7 @@ function verificarColisao() {
     }
 }
 
+// Função principal do loop de animação
 function loop() {
     if (!gameOver) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
