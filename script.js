@@ -2,7 +2,7 @@ const canvas = document.getElementById('jogo2D');
 const ctx = canvas.getContext('2d');
 
 // Constantes e variáveis
-const gravidade = 0.5;
+const gravidade = 0.25;
 const chaoY = canvas.height - 180;
 let gameOver = false;
 
@@ -19,6 +19,9 @@ const personagem = {
     altura: 90,
     largura: 70,
     velocidadey: 0,
+    velocidadeX: 0,
+    aceleracao: 0.5,
+    desaceleracao: 0.5,
     pulando: false,
     larguraPulo: 250,
     alturaPulo: 280,
@@ -30,18 +33,34 @@ const personagem = {
     frameDelayCounter: 0
 };
 
+// Variáveis de controle
+let teclas = {
+    esquerda: false,
+    direita: false,
+    espaco: false
+};
+
 // Eventos de controle
-document.addEventListener('keypress', (e) => {
+document.addEventListener('keydown', (e) => {
     if (e.code == 'Space' && !personagem.pulando && !gameOver) {
         console.log("clicou para pular");
-        personagem.velocidadey = -15; // Inicializa o pulo com velocidade negativa
+        personagem.velocidadey = -10; // Inicializa o pulo com velocidade negativa
         personagem.pulando = true;
     }
     if (e.code === 'KeyD' && !gameOver) {
-        personagem.x += 20; // Move 10 pixels para a direita
+        teclas.direita = true; 
     }
     if (e.code === 'KeyA' && !gameOver) {
-        personagem.x -= 20; // Move 10 pixels para a esquerda
+        teclas.esquerda = true;
+    }
+});
+
+document.addEventListener('keyup', (e) => {
+    if (e.code === 'KeyD') {
+        teclas.direita = false;
+    }
+    if (e.code === 'KeyA') {
+        teclas.esquerda = false;
     }
 });
 
@@ -70,6 +89,23 @@ function desenharPersonagem() {
 
 // Função para atualizar o personagem
 function atualizarPersonagem() {
+    // Movimentação suave
+    if (teclas.direita) {
+        personagem.velocidadeX += personagem.aceleracao;
+    } else if (teclas.esquerda) {
+        personagem.velocidadeX -= personagem.aceleracao;
+    } else {
+        personagem.velocidadeX *= personagem.desaceleracao; // Desacelerar quando não pressionar teclas
+    }
+
+    if (personagem.velocidadeX > 5) personagem.velocidadeX = 5;
+    if (personagem.velocidadeX < -5) personagem.velocidadeX = -5;
+
+    personagem.x += personagem.velocidadeX;
+
+    if (personagem.x < 0) personagem.x = 0;
+    if (personagem.x > canvas.width - personagem.largura) personagem.x = canvas.width - personagem.largura;
+
     if (personagem.pulando) {
         personagem.velocidadey += gravidade; // Aumenta a velocidade Y pela gravidade
         personagem.y += personagem.velocidadey; // Aplica a velocidade Y na posição
@@ -132,6 +168,28 @@ function verificarColisao() {
     }
 }
 
+// Função para desenhar e atualizar os inimigos
+function desenharInimigos() {
+    // Exemplo de inimigo Joe
+    const inimigo = {
+        x: canvas.width,
+        y: chaoY - 150,
+        largura: 50,
+        altura: 50,
+        velocidadex: 3
+    };
+
+    ctx.fillStyle = 'blue'; // Cor para o inimigo
+    ctx.fillRect(inimigo.x, inimigo.y, inimigo.largura, inimigo.altura);
+
+    // Atualizar a posição do inimigo
+    inimigo.x -= inimigo.velocidadex;
+    if (inimigo.x <= -inimigo.largura) {
+        inimigo.x = canvas.width; // Reaparece do outro lado
+        inimigo.velocidadex += 0.1; // Aumenta a velocidade do inimigo com o tempo
+    }
+}
+
 // Função principal do loop de animação
 function loop() {
     if (!gameOver) {
@@ -141,6 +199,7 @@ function loop() {
         atualizarPersonagem();
         atualizarObstaculo();
         verificarColisao();
+        desenharInimigos();
         requestAnimationFrame(loop);
     }
 }
