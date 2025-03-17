@@ -347,7 +347,7 @@ function loop() {
 
             // mostrar
             if (!gameOver) {
-                ctx.font = '30px Arial';
+                ctx.font = '30px Comic Sans MS';
                 ctx.lineWidth = 6;
                 ctx.strokeStyle = 'black';
                 ctx.strokeText('Pontos: ' + contador.numeroAtual(), 10, 30);
@@ -359,15 +359,8 @@ function loop() {
         } else {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(imgMorte, 0, 0, canvas.width, canvas.height);
-            ctx.font = '40px Arial';
-            ctx.lineWidth = 6;
-            ctx.strokeStyle = 'black';
-            ctx.strokeText('Você morreu!', 100, canvas.height / 2);
-            ctx.fillStyle = 'white';
-            ctx.fillText('Você morreu!', 100, canvas.height / 2);
             
-            ctx.strokeText('Pontuação: ' + contador.numeroAtual(), 100, canvas.height / 1.7);
-            ctx.fillText('Pontuação: ' + contador.numeroAtual(), 100, canvas.height / 1.7);
+            ctx.fillText('Score: ' + contador.numeroAtual(), 100, canvas.height / 1.1);
         }
     }
     requestAnimationFrame(loop);
