@@ -89,7 +89,7 @@ class Personagem extends Entidade {
                 }
             } else {
                 // Se o personagem não está se movendo, ele está parado
-                const imagemParado = imgPersonagemParado[Math.floor(Date.now() / 70) % 8];
+                const imagemParado = imgPersonagemParado[Math.floor(Date.now() / 80) % 8];
                 ctx.drawImage(imagemParado, this.x, this.y, tamanhosPersonagem.normal.largura, tamanhosPersonagem.normal.altura);
             }
         }
@@ -180,12 +180,12 @@ class Jack extends Entidade {
 
 const tamanhosPersonagem = {
     normal: {
-        largura: 150,  
-        altura: 200,   
+        largura: 90,  
+        altura: 150,   
     },
     correndo: {
         largura: 250,  
-        altura: 170,   
+        altura: 220,   
     },
     pulando: {
         largura: 190,  
@@ -193,7 +193,7 @@ const tamanhosPersonagem = {
     }
 };
 
-const personagem = new Personagem(100, chaoY - 200, 110, 150);
+const personagem = new Personagem(100, chaoY - 150, 110, 150);
 const joe = new Joe(900, chaoY - 150, 100, 150, Math.random() * (6 - 3) + 3);
 const lois = new Lois(1200, chaoY - 150, 150, 150, Math.random() * (6 - 3) + 3);
 const jack = new Jack(1200, chaoY - 150, 150, 150, Math.random() * (3 - 1) + 1);
